@@ -1,15 +1,7 @@
-<!doctype html>
-<html lang="en">
-<head>
-  {{> head-link }}
-</head>
-<body>
-  {{> navigation }}
-  <main class="blog__article">
-    <h2>{{data.fields.title}}</h2>
-    <span class="blog__article__date">Published: {{#moment data.fields.datePublished}}{{/moment }}</span>
-    <div class="blog__article__content">{{#marked data.fields.content }}{{/marked}}</div>
-  </main>
-  {{> footer }}
-</body>
-</html>
+{{> head }}
+<main class="blog__article">
+  <h2>{{data.fields.title}}</h2>
+  <span class="blog__article__date">Published: {{#moment data.fields.datePublished}}{{/moment }}</span>
+  <div class="blog__article__content">{{#marked data.fields.content }}{{/marked}}</div>
+</main>
+{{> footer }}

@@ -12,6 +12,7 @@ const discoverPartials = require('metalsmith-discover-partials');
 const autoprefixer = require('metalsmith-autoprefixer');
 const pageTitle = require('metalsmith-page-titles');
 const dotenv = require('dotenv');
+const assets = require('metalsmith-assets');
 
 //.env
 dotenv.config();
@@ -70,6 +71,10 @@ Metalsmith(__dirname)
         directory: 'layouts/partials'
     }))
     .use(layouts('handlebars'))
+    .use(assets({
+        source: 'src/favicon',
+        destination: './'
+    }))
     .build(function(err){
         if (err) throw err
     });
