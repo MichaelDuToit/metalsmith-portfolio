@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+    {{> head-link }}
+</head>
+<body>
+    {{> navigation }}
+    <main>
+        <ul class="project">
+            {{#each data.entries }}
+                <li class="project__list">
+                    <img class="project__list__img" src="{{rootpath}}{{fields.projectImage.fields.file.url}}" />
+                    <div class="project__list__item">
+                        <h3>{{fields.heading}}</h3>
+                        <p>{{fields.description}}</p>
+                        <span class="project__list__item__link__container">
+                            {{#if fields.link }}
+                                <a href="{{rootpath}}{{fields.link}}">Link to Site</a>
+                            {{/if}}
+                            {{#if fields.blogLink}}
+                                <a href="{{rootpath}}{{fields.blogLink}}">Link to Blog Post</a>
+                            {{/if}}
+                        </span>
+                        </div>
+                </li>
+            {{/each}}
+        </ul>
+    </main>
+    {{> footer }}
+</body>
+</html>

@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>DIY Running Heatmap | Michael Du Toit</title>
+  <meta name="description" content="No description">
+  <meta name="author" content="Contentful">
+  <meta name="theme-color" content="#007fff" />
+  <link href="/metalsmith_portfolio/build/css/styles.css" rel="stylesheet" />
+  <!--[if lte IE 9]>
+      <link href="/metalsmith_portfolio/build/css/styles-ie.css" rel="stylesheet" />
+      <script src="/metalsmith_portfolio/build/ie-scripts.js"></script>
+  <![endif]--></head>
+<body>
+  <nav class="nav">
+      <h1 class="nav__name"><a href="/metalsmith_portfolio/build/">Michael Du Toit</a></h1>
+      <button class="nav__btn" id="nav__btn">
+          <div class="nav__btn__text">Menu</div>
+          <div class="nav__btn__lines">
+              <span class="nav__btn__lines_1"></span>
+              <span class="nav__btn__lines_2"></span>
+              <span class="nav__btn__lines_3"></span>
+          </div>
+      </button>
+      <ul class="nav__menu" id="nav__menu">
+          <li class="nav__menu__item"><a href="/metalsmith_portfolio/build/">Home</a></li>
+          <li class="nav__menu__item"><a href="/metalsmith_portfolio/build/projects">Projects</a></li>
+          <li class="nav__menu__item"><a href="/metalsmith_portfolio/build/blog">Blog</a></li>
+      </ul>
+  </nav>  <main class="blog__article">
+    <h2>DIY Running Heatmap</h2>
+    <span class="blog__article__date">Published: 1st September 2017 12:40pm</span>
+    <div class="blog__article__content"><p>How to make your own Heatmap using your Strava activities.<br>In this tutorial you will be using Strava, Mapbox and a Bash terminal.  </p>
+<h4 id="pre-requisites-">Pre-Requisites:</h4>
+<ul>
+<li>A Strava Account containing all the activities you want on your heatmap  </li>
+<li>Using an Ubunut-based Operating System (should also work with *ubuntu deriatives such as Lubuntu, Kubuntu &amp; Xubuntu)</li>
+<li>Sudo/Root access</li>
+</ul>
+<h4 id="step-1-download-data-from-strava">Step 1: Download Data from Strava</h4>
+<p>Login to your Strava account and go to &quot;My Account&quot; -&gt; &quot;Settings&quot; -&gt; scroll down to &quot;Download your data&quot;.<br>Select &quot;Download all your activities&quot;. An email will be sent to you with a link to download all your activities on Strava (this may take a while).<br>Once you have recieved the email, download the zip folder to your computer.  </p>
+<h4 id="step-2-create-a-mapbox-account">Step 2: Create a Mapbox Account</h4>
+<p>Go to <a href="https://www.mapbox.com">www.mapbox.com</a> and create a (free) account for yourself.<br>Mapbox has a free tier which is good enough for personal/light usage (50,000 views/month as time of writing).  </p>
+<h4 id="step-3-install-ogr2ogr">Step 3: Install OGR2OGR</h4>
+<p>Add the Ubuntu GIS repository to your system and then update the packages list.<br><em>Note: The $ indicates the terminal/command line and does not need to be entered as part of the commands.</em></p>
+<pre><code class="language-bash">$ sudo add-apt-repository ppa:ubuntugis/ppa &amp;&amp; sudo apt-get update</code></pre>
+<p>When prompted for confirmation press the Enter key. Once the repository has been success fully added to your system, enter:  </p>
+<pre><code class="language-bash">$ sudo apt-get install gdal-bin</code></pre>
+<p>This will install gdal-bin/org2ogr. When prompted type &#39;y&#39; and press enter to confirm installation.<br>You will now have ogr2ogr installed. To verify type &#39;ogrinfo&#39; into your terminal and press enter, if it returns &quot;Usage: ogrinfo [-help-general]...&#39; then ogr2ogr has successfully been installed.  </p>
+<h4 id="step-4-locate-the-downloaded-activities-zip-folder">Step 4: Locate the downloaded activities.zip folder</h4>
+<p>Navigate to the zip folder that you have downloaded from the email that Strava sent you when you requested to download all your activities (generally named activities.zip).<br>This usually downloads to the Downloads directory (~/Downloads) by default.<br>Once you have located the zipped folder, unzip/extract the contents of activities.zip to a new folder named &quot;activities&quot;.<br>When it has finished unzipping/extracting the contents, navigate to the activities folder in the terminal.<br>If the folder is located in the Downloads directory as above, just enter the following into th terminal (and press enter):</p>
+<pre><code class="language-bash">$ cd ~/Downloads/activities</code></pre>
+<h4 id="step-5-create-a-shapefile-containing-your-activities">Step 5: Create a Shapefile containing your activities</h4>
+<p>In the terminal enter:</p>
+<pre><code class="language-bash">$ ogr2ogr runs &lt;first_track.gpx&gt;</code></pre>
+<p>Replace &lt;first_track.gpx&gt; with the earliest (oldest) file in the activites folder, for example:</p>
+<pre><code class="language-bash">$ ogr2ogr runs 20160101-130000-Run.gpx</code></pre>
+<h4 id="step-6-write-a-bash-script">Step 6: Write a Bash Script</h4>
+<p>Next we will write a Bash script to append all our files into one file.<br>In the terminal, enter:  </p>
+<pre><code class="language-bash">$ nano ogr2ogr.bash</code></pre>
+<p>Hit enter and the terminal will open the Nano text editor inside the terminal.<br>Type the following into the editor:  </p>
+<pre><code class="language-bash">#!/bin/bash  
+directory=~/Downloads/activities/
+for file in $( ls directory )  
+do  
+ ogr2ogr -skipfailures -append runs $directory$file  
+done</code></pre>
+<p>Press Ctrl+x, type y to save and press Enter to confirm.<br><em>Note: this script assumes that the activities folder is in the Downloads directory. If not, replace the line directory=~/Downloads/activities with directory=PATH_TO_FOLDER</em>  </p>
+<h4 id="step-7-execute-the-bash-script">Step 7: Execute the Bash Script</h4>
+<p>In the terminal type the following to ensure that you have full privledges to execute the script:  </p>
+<pre><code class="language-bash">$ chmod 7000 ogr2ogr.bash</code></pre>
+<p>The type:  </p>
+<pre><code class="language-bash">$ ogr2ogr.bash</code></pre>
+<p>This will run (or execute) the script.<br>It may take a few mintes to complete running the script, it may also throw some warnings but should be ok (we told it to skip errors).<br>Once it has completed running the script there will be a &#39;runs&#39; folder located inside the activities folder.</p>
+<h4 id="step-8-zip-the-required-folder">Step 8: Zip the required folder</h4>
+<p>Navigate into the &#39;runs&#39; folder/directory.<br>Then create a new folder named &#39;heatmap&#39;.
+Copy the following files into the heatmap folder: tracks.dbf, tracks.prj, tracks.shp and tracks.shx.
+Once you have copied them into the heatmap folder, compress/zip the heatmap folder into heatmap.zip.  </p>
+<h4 id="step-9-upload-the-folder">Step 9: Upload the folder</h4>
+<p>In your web browser go to <a href="https://www.mapbox.com">Mapbox.com</a>, login with the user account you made earlier and navigate to the Mapbox Studio (<a href="https://www.mapbox.com/studio">URL: www.mapbox.com/studio</a>).<br>Under the Tilesets block in the center, click &#39;New Tileset&#39;.<br>Click &#39;Select a file&#39; and navigate to the heatmap.zip folder, which should be in Downloads/activities/runs/ if your folder structure is the same as the guide.
+Select heatmap.zip and click the Open button.<br>Then click the &#39;Upload&#39; button and wait for it to upload (this can take a few minutes).  </p>
+<h4 id="step-10-base-map-style">Step 10: Base Map Style</h4>
+<p>Once the zipped folder has finished uploading, click on &#39;Styles&#39; in the side bar.<br>Then click the &#39;New Style&#39; button and then select the base map style you would like to use. For this guide we&#39;ll use &#39;Satellite&#39;. Then click &#39;Create&#39;.  </p>
+<h4 id="step-11-adding-your-heatmap-tileset-to-the-base-map">Step 11: Adding your heatmap/tileset to the base map</h4>
+<p>Return to the Tileset page (on the side bar click the four squares icon).<br>Then click on the name of the heatmap.zip file you had uploaded.<br>They (Mapbox) adds some additional letters/numbers to the name, so it might be something like <em>heatmap-c6i6s2</em> or similar.<br>Click the &#39;Add to style&#39; button and select the Style you had generated earlier (which would be Satellite in our case). You will then be taken to the editor area.<br>A &#39;New Layer&#39; side panel should be visible/open with your heatmap file/tileset as it&#39;s source. Just click &#39;Create Layer&#39;.<br>This will overlay your heatmap tileset over the base mape style (which in our case is a satellite map).  </p>
+<h4 id="step-12-personalizing-your-heatmap">Step 12: Personalizing your heatmap</h4>
+<p>You will want to change some of the styling away from the defaults.<br>On the left panel select the tileset layer, which will then show an additional layer.
+For this guide we will change the following: Color, Opacity, Width and Blur. With all four the best option will vary on personal preference, but for the guide we will make some suggestions.  </p>
+<ul>
+<li>Color - click the input field next to the Color option and select the color you want for your heatmap (your can enter either Hex, RGB, HSV values or use the color picker. Let&#39;s go with #0066ff.</li>
+<li>Opacity - With Opacity you can enter any value between 0 and 1 (you can use decimal values such as 0.25, 0.33, 0.7, etc). Play around with these as it will vary based on what the base map is and the color of the lines.  </li>
+<li>Width - The default width for the lines is 1px. Again, how wide yu want the lines will vary, and there is further options based on the viewing altitude/height). We&#39;ll set width to 2px.</li>
+<li>Blur - The blur option really gives the map a more heatmap look and feel. As with the other options you will need to play around with the values to find what looks best to you. We&#39;ll set the Blur to 1px.
+<em>Almost all of the options have the option to change their values based on the zoom height, which you can play around with later.</em><br>Once you have made the changes, click &quot;Publish&quot; in the top of the central pane, then click &quot;Publish&quot; on the confirmation box.<br>Click &quot;Preview &amp; Use&quot; and then click &quot;Preview&quot; to the right to view your heatmap.<br>Voila!  </li>
+</ul>
+<p>You can go back to the styles again at anytime and change them.</p>
+</div>
+  </main>
+  <footer class="footer">
+      <ul class="footer__left">
+          <li><a class="footer__left__item" href="https://github.com/michaeldutoit">GitHub - MichaelDuToit</a></li>
+          <li><a class="footer__left__item" href="https://www.linkedin.com/in/michael-du-toit-216404107/">LinkedIn - Michael Du Toit</a></li>
+          <li><a class="footer__left__item" href="https://codepen.io/Michaeldt/">CodePen - Michaeldt</a></li>
+      </ul>
+      <ul class="footer__right">
+          <li class="footer__right__item">
+              <a href="https://www.contentful.com" rel="nofollow">
+                  <img src="https://images.contentful.com/fo9twyrwpveg/44baP9Gtm8qE2Umm8CQwQk/c43325463d1cb5db2ef97fca0788ea55/PoweredByContentful_LightBackground.svg" width="auto" height="auto">
+              </a>
+          </li>
+          <li class="footer__right__item">
+              <a href="https://www.netlify.com" rel="nofollow">
+                  <img src="https://www.netlify.com/img/global/badges/netlify-color-accent.svg" width="auto" height="auto">
+              </a>
+          </li>
+      </ul>
+  </footer>
+  <script src="/metalsmith_portfolio/build/script.js"></script></body>
+</html>

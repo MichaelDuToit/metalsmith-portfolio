@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<head>
+  {{> head-link }}
+</head>
+<body>
+  {{> navigation }}
+  <main>
+    <ul class="blog__list">
+      {{#eachSortedByDate data.entries }}
+        <li class="blog__list__item">
+          <h2 class="blog__list__item__header">{{fields.title}}</h2>
+          <span class="blog__list__item__date">{{#moment fields.datePublished }}{{/moment}}</span><br/>
+          <p class="blog__list__item__desc">{{fields.description}}</p>
+          <a class="blog__list__item__link" href="{{rootpath}}{{fields.slug}}">Read more...</a>
+        </li>
+        {{/eachSortedByDate}}
+    </ul>
+  </main>
+  {{> footer }}
+</body>
+</html>
