@@ -1,7 +1,7 @@
 {
   "name": "metalsmith_portfolio",
   "version": "1.0.0",
-  "description": "",
+  "description": "My Portfolio Project. Metalsmith + Contentful",
   "main": "index.js",
   "scripts": {
     "build": "node index.js"
