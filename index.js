@@ -28,15 +28,15 @@ handlebars.registerHelper('eachSortedByDate', function(context, options){
     let ret = '';
     let sortedContext = context.sort(function (a,b){
         if (new Date(a.fields.datePublished) > new Date(b.fields.datePublished)){
-            return -1
+            return -1;
         }
         if (new Date(a.fields.datePublished) < new Date(b.fields.datePublished)){
-            return 1
+            return 1;
         }
-        return 0
-    })
+        return 0;
+    });
     for(let i = 0, j = sortedContext.length; i < j; i++){
-        ret = ret + options.fn(sortedContext[i])
+        ret = ret + options.fn(sortedContext[i]);
     }
     return ret
 });
